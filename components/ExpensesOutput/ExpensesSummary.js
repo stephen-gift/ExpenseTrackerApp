@@ -3,12 +3,12 @@ import React from "react";
 
 export default function ExpensesSummary({ expenses, periodName }) {
   const expensesSum = expenses.reduce((sum, expense) => {
-    return sum + expense.amount;
+    return sum + parseFloat(expense.amount);
   }, 0);
   return (
     <View>
       <Text>{periodName}</Text>
-      <Text>${expensesSum.tofixed(2)}</Text>
+      <Text>${expensesSum.toFixed(2)}</Text>
     </View>
   );
 }
