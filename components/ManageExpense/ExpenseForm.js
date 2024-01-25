@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import Input from "./Input";
-import { GlobalStyles } from "../../constants/styles";
 import Button from "../UI/Button";
 
 export default function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
@@ -11,7 +10,7 @@ export default function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
     description: "",
   });
   function inputChangeHandler(inputIdentifier, enteredValue) {
-    setAmountValue((currentValues) => {
+    setInputValues((currentValues) => {
       return {
         ...currentValues,
         [inputIdentifier]: enteredValue,
@@ -19,7 +18,14 @@ export default function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
     });
   }
 
-  function submitHandler() {}
+  function submitHandler() {
+    const expenseData = {
+      amount: +inputValues.amount,
+      date: new Date(inputValues.date),
+      description: inputValues.description,
+    };
+    onSubmit(expenseData);
+  }
   return (
     <View style={styles.form}>
       <Text style={styles.title}>Your Expense</Text>
@@ -48,7 +54,6 @@ export default function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
         label={"Description"}
         textInputConfig={{
           multiline: true,
-          numberOfLines: 5,
           //   autoCorrect: false,
           //   autoCapitalize: true,
           onChangeText: inputChangeHandler.bind(this, "description"),
