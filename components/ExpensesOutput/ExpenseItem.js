@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { GlobalStyles } from "../../constants/styles";
-import { gerFormattedDate } from "../../util/date";
+import { getFormattedDate } from "../../util/date";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ExpenseItem({ id, description, date, amount }) {
@@ -23,7 +23,7 @@ export default function ExpenseItem({ id, description, date, amount }) {
           <Text style={[styles.textBase, styles.description]}>
             {description}
           </Text>
-          <Text style={styles.textBase}>{gerFormattedDate(date)}</Text>
+          <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
         </View>
         <View style={styles.amountContainer}>
           <Text style={[styles.textBase, styles.amount]}>
