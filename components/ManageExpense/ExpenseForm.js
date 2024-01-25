@@ -74,7 +74,8 @@ export default function ExpenseForm({
     ) ||
     !(
       inputs.date.isValid &&
-      new Date(inputs.date.value).toString() !== "Invalid Date"
+      new Date(inputs.date.value).toString() !== "Invalid Date" &&
+      inputs.date.value.length === 10
     ) ||
     !(inputs.description.isValid && inputs.description.value.trim().length > 0);
 
