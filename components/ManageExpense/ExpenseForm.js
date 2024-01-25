@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Input from "./Input";
 import Button from "../UI/Button";
 import { getFormattedDate } from "../../util/date";
+import { GlobalStyles } from "../../constants/styles";
 
 export default function ExpenseForm({
   submitButtonLabel,
@@ -83,6 +84,7 @@ export default function ExpenseForm({
       <View style={styles.inputRow}>
         <Input
           label={"Amount"}
+          invalid={!inputs.amount.isValid}
           textInputConfig={{
             keyboardType: "decimal-pad",
             onChangeText: inputChangeHandler.bind(this, "amount"),
@@ -92,6 +94,7 @@ export default function ExpenseForm({
         />
         <Input
           label={"Date"}
+          invalid={!inputs.date.isValid}
           textInputConfig={{
             placeholder: "YYYY-MM-DD",
             maxLength: 10,
@@ -103,6 +106,7 @@ export default function ExpenseForm({
       </View>
       <Input
         label={"Description"}
+        invalid={!inputs.description.isValid}
         textInputConfig={{
           multiline: true,
           //   autoCorrect: false,
@@ -148,6 +152,11 @@ const styles = StyleSheet.create({
   rowInput: {
     flex: 1,
   },
+  errorText: {
+    textAlign: "center",
+    color: GlobalStyles.colors.error500,
+    margin: 8,
+  },
   buttons: {
     flexDirection: "row",
     justifyContent: "center",
@@ -156,10 +165,5 @@ const styles = StyleSheet.create({
   button: {
     minWidth: 120,
     marginHorizontal: 8,
-  },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginBottom: 10,
   },
 });
