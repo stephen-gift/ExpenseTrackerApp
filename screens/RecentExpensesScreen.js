@@ -15,7 +15,11 @@ export default function RecentExpenseScreen() {
   });
 
   return (
-    <ExpensesOutput expenses={recentExpenses} expensePeriod={"Last 7 days"} />
+    <ExpensesOutput
+      expenses={recentExpenses}
+      expensePeriod={"Last 7 days"}
+      fallBackText={"No Expenses resgistered for the last 7 days"}
+    />
   );
 }
 
