@@ -1,18 +1,3 @@
-import axios from "axios";
-// export function storeExpense(expenseData) {
-//   axios.post(
-//     "https://stephen-expense-tracker-default-rtdb.firebaseio.com/expenses.json",
-//     expenseData
-//   );
-// }
-
-// export function storeExpense(expenseData) {
-//   // Assuming you are using Firebase Realtime Database
-//   const firebaseEndpoint =
-//     "https://stephen-expensetracker-default-rtdb.europe-west1.firebasedatabase.app/expense.json";
-//   axios.post(firebaseEndpoint, expenseData);
-// }
-
 const BACKEND_URL =
   "https://stephen-expensetracker-default-rtdb.europe-west1.firebasedatabase.app";
 export async function storeExpense(expenseData) {
@@ -69,6 +54,42 @@ export async function fetchExpenses() {
     }));
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+}
+
+export async function updateExpense(id, expenseData) {
+  try {
+    const response = await fetch(`${BACKEND_URL}/expenses/${id}.json`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(expenseData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status code ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // You can process the response data if needed
+  } catch (error) {}
+}
+export async function deleteExpense(id) {
+  try {
+    const response = await fetch(`${BACKEND_URL}/expenses/${id}.json`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error(`Request failed with status code ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // You can process the response data if needed
+  } catch (error) {
+    console.error("Error deleting expense:", error.message);
     throw error;
   }
 }
