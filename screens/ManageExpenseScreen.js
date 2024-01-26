@@ -5,15 +5,17 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import React, { useContext, useLayoutEffect } from "react";
+import React, { useContext, useLayoutEffect, useState } from "react";
 import { GlobalStyles } from "../constants/styles";
 import IconButton from "../components/UI/IconButton";
 import Button from "../components/UI/Button";
 import { ExpenseContext } from "../store/context/expenseContext";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { deleteExpense, storeExpense, updateExpense } from "../util/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
 
 export default function ManageExpensesScreen({ route, navigation }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const expensesCtx = useContext(ExpenseContext);
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
@@ -29,6 +31,7 @@ export default function ManageExpensesScreen({ route, navigation }) {
   }, [navigation, isEditing]);
 
   async function deleteExpenseHandler() {
+    setIsSubmitting(true);
     await deleteExpense(editedExpenseId);
     expensesCtx.deleteExpense(editedExpenseId);
     navigation.goBack();
@@ -41,12 +44,14 @@ export default function ManageExpensesScreen({ route, navigation }) {
     // console.log("editedExpenseId:", editedExpenseId);
     // console.log("expenseData:", expenseData);
 
+    setIsSubmitting(true);
     try {
       if (isEditing) {
-        expensesCtx.updateExpense(editedExpenseId, expenseData);
         await updateExpense(editedExpenseId, expenseData);
+        expensesCtx.updateExpense(editedExpenseId, expenseData);
       } else {
         const id = await storeExpense(expenseData);
+
         expensesCtx.addExpense({ ...expenseData, id: id });
       }
       navigation.goBack();
@@ -54,12 +59,17 @@ export default function ManageExpensesScreen({ route, navigation }) {
       console.error("Error handling confirmation:", error);
       // Handle the error or show an alert to the user
       // You might consider not navigating back if there's an error
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   const handleTouchablePress = () => {
     Keyboard.dismiss();
   };
+  if (isSubmitting) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <TouchableWithoutFeedback onPress={handleTouchablePress}>
