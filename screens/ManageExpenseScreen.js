@@ -35,18 +35,25 @@ export default function ManageExpensesScreen({ route, navigation }) {
   function cancelHandler() {
     navigation.goBack();
   }
-  function confirmHandler(expenseData) {
+  async function confirmHandler(expenseData) {
     // console.log("isEditing:", isEditing);
     // console.log("editedExpenseId:", editedExpenseId);
     // console.log("expenseData:", expenseData);
 
-    if (isEditing) {
-      expensesCtx.updateExpense(editedExpenseId, expenseData);
-    } else {
-      storeExpense(expenseData);
-      expensesCtx.addExpense(expenseData);
+    try {
+      if (isEditing) {
+        expensesCtx.updateExpense(editedExpenseId, expenseData);
+      } else {
+        const id = await storeExpense(expenseData);
+        storeExpense(expenseData);
+        expensesCtx.addExpense({ ...expenseData, id: id });
+      }
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error handling confirmation:", error);
+      // Handle the error or show an alert to the user
+      // You might consider not navigating back if there's an error
     }
-    navigation.goBack();
   }
 
   const handleTouchablePress = () => {
