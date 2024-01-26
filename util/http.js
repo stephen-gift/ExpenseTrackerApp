@@ -16,7 +16,7 @@ import axios from "axios";
 const BACKEND_URL =
   "https://stephen-expensetracker-default-rtdb.europe-west1.firebasedatabase.app";
 export function storeExpense(expenseData) {
-  fetch(BACKEND_URL + "/expense.json", {
+  fetch(BACKEND_URL + "/expenses.json", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -40,19 +40,39 @@ export function storeExpense(expenseData) {
 }
 
 export async function fetchExpenses() {
-  const response = await fetch(BACKEND_URL + "/expense.json");
+  //   const response = await fetch(BACKEND_URL + "/expenses.json");
 
-  const expenses = [];
-  console.log(response.data);
-  for (const key in response.data) {
-    const expenseObj = {
+  //   const expenses = [];
+  //   console.log(response.data);
+  //   for (const key in response.data) {
+  //     const expenseObj = {
+  //       id: key,
+  //       date: response.data[key].date,
+  //       amount: response.data[key].amount,
+  //       description: response.data[key].description,
+  //     };
+  //     expenses.push(expenseObj);
+  //   }
+
+  //   return expenses;
+
+  try {
+    const response = await fetch(BACKEND_URL + "/expenses.json");
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const expenses = await response.json();
+
+    return Object.keys(expenses).map((key) => ({
       id: key,
-      date: response.data[key].date,
-      amount: response.data[key].amount,
-      description: response.data[key].description,
-    };
-    expenses.push(expenseObj);
+      date: new Date(expenses[key].date),
+      amount: expenses[key].amount,
+      description: expenses[key].description,
+    }));
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
-
-  return expenses;
 }
