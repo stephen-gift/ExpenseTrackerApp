@@ -5,9 +5,11 @@ import { ExpenseContext } from "../store/context/expenseContext";
 import { getDateMinusDays } from "../util/date";
 import { fetchExpenses } from "../util/http";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 export default function RecentExpenseScreen() {
   const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState();
   const expensesCtx = useContext(ExpenseContext);
 
   useEffect(() => {
@@ -18,12 +20,20 @@ export default function RecentExpenseScreen() {
         setIsFetching(false);
         expensesCtx.setExpenses(expenses);
       } catch (error) {
+        setError(`Error fetching expenses: ${error}`);
         console.error("Error fetching expenses:", error);
       }
+      setIsFetching(false);
     }
     getExpenses();
   }, []);
 
+  function errorHandler() {
+    setError(null);
+  }
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
+  }
   if (isFetching) {
     return <LoadingOverlay />;
   }
